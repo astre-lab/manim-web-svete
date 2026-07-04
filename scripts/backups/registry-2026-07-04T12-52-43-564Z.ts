@@ -25,4 +25,17 @@ export const animations = [
     title: "Transform Demo",
     path: "/animations/transform",
   },
+  {
+    id: "tets",
+    title: "hdhd djdjsn",
+    description: "hshsj bsjbsbsbs sjsb sbshs s s",
+    path: "/animations/tets",
+  },
+  {
+    id: "test2",
+    title: "test3",
+    description: "hsjns",
+    thumbnail: "b",
+    path: "/animations/test2",
+  },
 ] satisfies AnimationEntry[];

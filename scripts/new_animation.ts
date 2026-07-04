@@ -3,22 +3,31 @@
 import { Project, SyntaxKind } from "ts-morph";
 
 const REGISTRY = "src/lib/animations/registry.ts";
+const TEMPLATE = "src/lib/templates/+page.svelte";
+const ROUTES = "src/routes/animations";
 const BACKUP_DIR = "scripts/backups";
 
-async function prompt(question: string, defaultValue = ""): Promise<string> {
+function prompt(question: string, defaultValue = ""): Promise<string> {
   const suffix = defaultValue ? ` [${defaultValue}]` : "";
   const value = globalThis.prompt(`${question}${suffix}:`)?.trim() ?? "";
   return value || defaultValue;
 }
 
+function validateId(id: string): boolean {
+  if (id.length === 0 || id.length > 64) return false;
+
+  if (/[\x00-\x1F\x7F]/.test(id)) return false;
+
+  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id);
+}
+
 async function main() {
   try {
-    // Ensure backup directory exists
     await Deno.mkdir(BACKUP_DIR, { recursive: true });
 
-    // Backup registry
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const backup = `${BACKUP_DIR}/registry-${timestamp}.ts`;
+
     await Deno.copyFile(REGISTRY, backup);
 
     console.log(`✔ Backup created: ${backup}\n`);
@@ -31,39 +40,59 @@ async function main() {
 
     const initializer = variable.getInitializerOrThrow();
 
-const array = initializer.isKind(SyntaxKind.ArrayLiteralExpression)
-  ? initializer
-  : initializer
-      .asKindOrThrow(SyntaxKind.SatisfiesExpression)
-      .getExpression()
-      .asKindOrThrow(SyntaxKind.ArrayLiteralExpression);
+    const array = initializer.isKind(SyntaxKind.ArrayLiteralExpression)
+      ? initializer
+      : initializer
+        .asKindOrThrow(SyntaxKind.SatisfiesExpression)
+        .getExpression()
+        .asKindOrThrow(SyntaxKind.ArrayLiteralExpression);
 
-    const existing = array.getElements().map((e) => {
-      return e
+    const existing = array.getElements().map((e) =>
+      e
         .asKindOrThrow(SyntaxKind.ObjectLiteralExpression)
         .getProperty("id")
         ?.asKindOrThrow(SyntaxKind.PropertyAssignment)
         .getInitializerIfKindOrThrow(SyntaxKind.StringLiteral)
-        .getLiteralText();
-    });
+        .getLiteralText()
+    );
 
-    const id = await prompt("Animation ID");
+    const id = prompt("Animation ID");
 
-    if (existing.includes(id)) {
-      console.error(`\n❌ ID "${id}" already exists.`);
-      console.error("No changes were made.");
+    if (!validateId(id)) {
+      console.error(
+        "\n❌ Invalid animation ID.\nOnly lowercase letters, numbers and hyphens are allowed.",
+      );
       return;
     }
 
-    const title = await prompt("Title");
-    const description = await prompt("Description");
-    const thumbnail = await prompt("Thumbnail");
-    const category = await prompt("Category");
-    const tagsInput = await prompt("Tags (comma separated)");
-    const path = await prompt("Path", `/animations/${id}`);
+    if (existing.includes(id)) {
+      console.error(`\n❌ ID "${id}" already exists.`);
+      return;
+    }
+
+    const title = prompt("Title");
+    const description = prompt("Description");
+    const thumbnail = prompt("Thumbnail");
+    const category = prompt("Category");
+    const tagsInput = prompt("Tags (comma separated)");
+    const path = prompt("Path", `/animations/${id}`);
+
+    const animationDir = `${ROUTES}/${id}`;
+    const pageFile = `${animationDir}/+page.svelte`;
+
+    try {
+      await Deno.stat(pageFile);
+      console.error(`\n❌ ${pageFile} already exists.`);
+      return;
+    } catch (err) {
+      if (!(err instanceof Deno.errors.NotFound)) throw err;
+    }
 
     const tags = tagsInput
-      ? tagsInput.split(",").map((x) => x.trim()).filter(Boolean)
+      ? tagsInput
+        .split(",")
+        .map((x) => x.trim())
+        .filter(Boolean)
       : [];
 
     const properties = [
@@ -86,6 +115,11 @@ const array = initializer.isKind(SyntaxKind.ArrayLiteralExpression)
 
     await source.save();
 
+    await Deno.mkdir(animationDir, { recursive: true });
+
+    await Deno.copyFile(TEMPLATE, pageFile);
+
+    console.log(`✔ Created ${pageFile}`);
     console.log("\n✅ Animation appended successfully.");
   } catch (err) {
     console.error("\n❌ Failed to update registry.");

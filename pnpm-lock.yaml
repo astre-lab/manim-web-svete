@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@alexdev404/sficons-svelte':
-        specifier: ^1.0.3
-        version: 1.0.3
       '@lucide/svelte':
         specifier: ^1.23.0
         version: 1.23.0(svelte@5.56.4)
@@ -59,9 +56,6 @@ importers:
         version: 8.1.3(jiti@2.7.0)
 
 packages:
-
-  '@alexdev404/sficons-svelte@1.0.3':
-    resolution: {integrity: sha512-NVJBlSM7FUhL7EQg2ENagjUz9Y6C72VVAg6+SrGxNiG77O7oM3V17oZ3DtJdLbekiDcVPM1Bzk4LhFQgCe0F7A==}
 
   '@emnapi/core@1.11.1':
     resolution: {integrity: sha512-RSvbQmHzdKzNsLYa/wHrbc3KN4sYLKAdPZxqiM2HATqv/SBk2/ENSHpvXGaLOMcsAyz0poEGqkmmKYG3OWiJEQ==}
@@ -1079,8 +1073,6 @@ packages:
     resolution: {integrity: sha512-B58NGBEoc8Y9MWWCQGl/gq9xBCe4IiKM0a2x7GZdQKOW5Exr8S1W24J6OgM1njK8xCRGvAJIL/MxXHf6SkmQKQ==}
 
 snapshots:
-
-  '@alexdev404/sficons-svelte@1.0.3': {}
 
   '@emnapi/core@1.11.1':
     dependencies:

@@ -1,8 +1,8 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import SFIcon from "@alexdev404/sficons-svelte";
+  import { Share } from '@lucide/svelte';
   import { 
-    App, Page, Navbar, Toolbar, Button, 
+    App, Page, Navbar, Toolbar, Button, Fab,
     Block, BlockTitle, Actions, ActionsGroup, ActionsLabel, ActionsButton 
   } from 'konsta/svelte';
   import {
@@ -125,8 +125,11 @@
       </div>
 
       <Toolbar class="controls-toolbar" top={false}>
-<Button
+        
+        
+<Fab
   iconOnly
+  class="fixed left-1/2 -translate-x-1/2 bottom-safe-4 z-20"
   onclick={() => (showExportActions = true)}
   disabled={isExporting}
   aria-label="Export"
@@ -134,9 +137,10 @@
   {#if isExporting}
     <div class="spinner"></div>
   {:else}
-    <SFIcon icon="square-and-arrow-up" size={22} />
+<Share />
   {/if}
-</Button>
+</Fab>
+
       </Toolbar>
     </div>
 

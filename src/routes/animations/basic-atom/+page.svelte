@@ -13,7 +13,7 @@
 
   const WIDTH = 800;
   const HEIGHT = 450;
-  let title = "Basic example"
+  let title = "Basic atom"
 
   let containerEl = $state();
   let player = null;

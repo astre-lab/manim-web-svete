@@ -20,15 +20,4 @@ export const animations = [
     tags: ["create", "circle"],
     path: "/animations/first",
   },
-  {
-    id: "basic-atom",
-    title: "Basic atom",
-    description: "An atom that is basic",
-    path: "/animations/basic-atom",
-  },
-  {
-    id: "test",
-    title: "test",
-    path: "/animations/test",
-  },
 ] satisfies AnimationEntry[];

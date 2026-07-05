@@ -26,9 +26,4 @@ export const animations = [
     description: "An atom that is basic",
     path: "/animations/basic-atom",
   },
-  {
-    id: "test",
-    title: "test",
-    path: "/animations/test",
-  },
 ] satisfies AnimationEntry[];
